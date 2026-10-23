@@ -1,6 +1,6 @@
 # Minimal implementation of Looped Flows
 
-This repository contains a minimalistic and clean implementation of Looped Flows from [https://arxiv.org/pdf/2609.11801](https://arxiv.org/pdf/2609.11801)
+This repository contains a minimalistic and clean implementation of Looped Flows from [Thinking with Looped Flows](https://arxiv.org/pdf/2609.11801)
 
 ![](./assets/looped_flows.png)
 
