@@ -1,0 +1,8 @@
+torch
+torchvision
+tqdm
+einops
+matplotlib
+datasets
+ema-pytorch
+adam-atan2-pytorch
