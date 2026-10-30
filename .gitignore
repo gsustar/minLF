@@ -1,4 +1,4 @@
 .data
 *.pt
-
+plots/*.png
 __pycache__

@@ -91,7 +91,7 @@ def train(args):
     optimizer = AdamAtan2(model.parameters(), lr=args.lr, weight_decay=1.0, betas=(0.9, 0.95))
 
     scheduler = None
-    if not args.overfit:
+    if not args.overfit and not args.no_scheduler:
         steps_per_epoch = len(dataloaders["train"])
         num_warmup_steps = 2000
         warmup = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=0.01, total_iters=num_warmup_steps)
@@ -194,6 +194,7 @@ def main():
     parser.add_argument("--gamma", type=float, default=5.0, help="Gamma value for inference")
     parser.add_argument("--hidden_size", type=int, default=512, help="Hidden size for the model")
     parser.add_argument("--bf16", action="store_true", help="Use bfloat16 precision for training")
+    parser.add_argument("--no_scheduler", action="store_true", help="Disable LR warmup and cosine schedule")
     args = parser.parse_args()
 
     train(args)
