@@ -33,16 +33,19 @@ Each ablation changes one thing w.r.t. the baseline (single run each).
 
 Each cell is accuracy / coverage.
 
-| Epoch | Baseline        | w/o AdamAtan2   | w/o EMA         | w/o StableMax   |
-|------:|:---------------:|:---------------:|:---------------:|:---------------:|
-| 50    | 0.5912 / 0.7283 | 0.3131 / 0.3117 | 0.1953 / 0.4002 | 0.9741 / 0.9616 |
-| 100   | 0.4567 / 0.8716 | 0.2484 / 0.3868 | 0.0893 / 0.2717 | 0.9845 / 0.9561 |
-| 150   | 0.7296 / 0.8966 | 0.7361 / 0.7619 | 0.0737 / 0.2036 | 0.9819 / 0.9381 |
-| 200   | 0.0776 / 0.2083 | 0.9366 / 0.9186 | 0.0375 / 0.1292 | 0.9897 / 0.9632 |
+| Epoch | Baseline        | w/o AdamAtan2   | w/o EMA         | w/o StableMax   | w/o StableMax, w/o trunc_normal_init_ |
+|------:|:---------------:|:---------------:|:---------------:|:---------------:|:-------------------------------------:|
+| 50    | 0.5912 / 0.7283 | 0.3131 / 0.3117 | 0.1953 / 0.4002 | 0.9741 / 0.9616 | 0.9909 / 0.9514                       |
+| 100   | 0.4567 / 0.8716 | 0.2484 / 0.3868 | 0.0893 / 0.2717 | 0.9845 / 0.9561 | 0.9392 / 0.9186                       |
+| 150   | 0.7296 / 0.8966 | 0.7361 / 0.7619 | 0.0737 / 0.2036 | 0.9819 / 0.9381 | 0.9948 / 0.9608                       |
+| 200   | 0.0776 / 0.2083 | 0.9366 / 0.9186 | 0.0375 / 0.1292 | 0.9897 / 0.9632 | 0.9922 / 0.9538                       |
+
+**TLDR:** if you want you can throw out all the code for `stablemax_cross_entropy` and `trunc_normal_init_`.
 
 ## TODO:
 
 - [x] Ablate `AdamAtan2` optimizer
 - [x] Ablate `EMA`
 - [x] Ablate `stablemax_cross_entropy`
-- [ ] Ablate `trunc_normal_init_`
+- [x] Ablate `trunc_normal_init_`
+

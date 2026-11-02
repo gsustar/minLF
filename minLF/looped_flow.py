@@ -18,6 +18,20 @@ def interpolant(c, ti, x0, x1):
 def cnoise(c):
     return torch.where(given_mask(c), c, torch.randn_like(c))
 
+def s(x, epsilon=1e-8):
+    return torch.where(x < 0, 1/(1-x+epsilon), x+1)
+
+def log_stablemax(x, dim=-1):
+    s_x = s(x)
+    return torch.log(s_x/torch.sum(s_x, dim=dim, keepdim=True))
+
+def stablemax_cross_entropy(logits, labels, reduction="mean", dtype=torch.float32):
+    """https://github.com/LucasPrietoAl/grokking-at-the-edge-of-numerical-stability/blob/720d2444df12b851d6cb417ab08cf125c822b2ae/utils.py#L22"""
+    logprobs = log_stablemax(logits.to(dtype), dim=-1)
+    prediction_logprobs = torch.gather(logprobs, index=labels.long(), dim=-1)
+    loss = -torch.mean(prediction_logprobs) if reduction=="mean" else - prediction_logprobs
+    return loss
+
 
 class LoopedFlow(nn.Module):
     def __init__(self, hidden_size, vocab_size, num_trm_blocks=2, bf16=False):
@@ -37,7 +51,7 @@ class LoopedFlow(nn.Module):
     def device(self):
         return self.dummy.device
 
-    def train_step(self, c, x1, optimizer, k=16):
+    def train_step(self, c, x1, optimizer, k=16, use_stablemax_ce=False):
         bs, seq_len, _ = x1.size()
         x0 = cnoise(c).to(self.device)
         ts, _ = torch.rand(c.size(0), k+1, device=self.device).sort() # NOTE: k or k+1?
@@ -54,9 +68,14 @@ class LoopedFlow(nn.Module):
                 x_hat_ti, q_hat, z_ti = self.denoiser(I_ti, ti, z_ti)
             q = (x1 == _round(x_hat_ti)).all(dim=(-2, -1)).unsqueeze(-1).float()
 
-            loss_x = F.cross_entropy(
-                x_hat_ti.mT, x1.mT, reduction='none'
-            ).mean(dim=-1)
+            if use_stablemax_ce:
+                loss_x = stablemax_cross_entropy(
+                    x_hat_ti, x1.argmax(-1).unsqueeze(-1), reduction='none', dtype=torch.float32
+                ).mean(dim=(-2, -1))
+            else:
+                loss_x = F.cross_entropy(
+                    x_hat_ti.mT, x1.mT, reduction='none'
+                ).mean(dim=-1)
             loss_q = F.binary_cross_entropy_with_logits(
                 q_hat, q, reduction='none'
             ).squeeze(-1)

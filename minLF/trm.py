@@ -178,7 +178,7 @@ class TRMInner(nn.Module):
         )
 
         self.input_reg = nn.Parameter(
-            trunc_normal_init_(torch.empty(hidden_size), std=0)
+            trunc_normal_init_(torch.empty(self.hidden_size), std=0)
         )
         self.H_init = nn.Buffer(
             trunc_normal_init_(torch.empty(self.hidden_size), std=1), persistent=True
