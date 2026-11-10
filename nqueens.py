@@ -195,6 +195,8 @@ def main():
     parser.add_argument("--hidden_size", type=int, default=512, help="Hidden size for the model")
     parser.add_argument("--bf16", action="store_true", help="Use bfloat16 precision for training")
     parser.add_argument("--no_scheduler", action="store_true", help="Disable LR warmup and cosine schedule")
+    parser.add_argument("--trm_L_cycles", type=int, default=4)
+    parser.add_argument("--trm_H_cycles", type=int, default=3)
     args = parser.parse_args()
 
     train(args)

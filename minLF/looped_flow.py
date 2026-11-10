@@ -34,14 +34,14 @@ def stablemax_cross_entropy(logits, labels, reduction="mean", dtype=torch.float3
 
 
 class LoopedFlow(nn.Module):
-    def __init__(self, hidden_size, vocab_size, num_trm_blocks=2, bf16=False):
+    def __init__(self, hidden_size, vocab_size, num_trm_blocks=2, bf16=False, trm_L_cycles=4, trm_H_cycles=3):
         super().__init__()
         self.denoiser = TRMInner(
             hidden_size=hidden_size, 
             vocab_size=vocab_size,
             num_trm_blocks=num_trm_blocks,
-            L_cycles=4,
-            H_cycles=3
+            L_cycles=trm_L_cycles,
+            H_cycles=trm_H_cycles
         )
         self.bf16 = bf16
         self.lmbda_q = 0.5

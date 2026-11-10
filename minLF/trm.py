@@ -177,15 +177,18 @@ class TRMInner(nn.Module):
             dim_head=hidden_size // num_heads,
         )
 
-        self.input_reg = nn.Parameter(
-            trunc_normal_init_(torch.empty(self.hidden_size), std=0)
-        )
-        self.H_init = nn.Buffer(
-            trunc_normal_init_(torch.empty(self.hidden_size), std=1), persistent=True
-        )
-        self.L_init = nn.Buffer(
-            trunc_normal_init_(torch.empty(self.hidden_size), std=1), persistent=True
-        )
+        # self.input_reg = nn.Parameter(
+        #     trunc_normal_init_(torch.empty(self.hidden_size), std=0)
+        # )
+        # self.H_init = nn.Buffer(
+        #     trunc_normal_init_(torch.empty(self.hidden_size), std=1), persistent=True
+        # )
+        # self.L_init = nn.Buffer(
+        #     trunc_normal_init_(torch.empty(self.hidden_size), std=1), persistent=True
+        # )
+        self.input_reg = nn.Parameter(torch.zeros(self.hidden_size))
+        self.H_init = nn.Buffer(torch.randn(self.hidden_size), persistent=True)
+        self.L_init = nn.Buffer(torch.randn(self.hidden_size), persistent=True)
         self.L_cycles = L_cycles
         self.H_cycles = H_cycles
 
